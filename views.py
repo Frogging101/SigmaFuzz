@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.template import loader,Context,RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.forms import ModelForm
 
 from sigmafuzz.models import Submission
@@ -35,5 +35,10 @@ def submit(request):
         form = SubmitForm()
         return HttpResponse(template.render(RequestContext(request,{'form': form.as_table()})))
 
-def doSubmit(request):
-    pass
+def submissionView(request,subID):
+    try:
+        submission = Submission.objects.all().get(id=subID)
+    except Submission.DoesNotExist:
+        raise Http404
+    template = loader.get_template('sigmafuzz/submission.html')
+    return HttpResponse(template.render(Context({'submission': submission})))

@@ -1,0 +1,33 @@
+{% extends "sigmafuzz/base.html" %}
+{% load webdesign %}
+{% block title %}{{ submission.title }}{% endblock %}
+{% block style %}
+    .side{
+        float: left;
+        width: 200px;
+        margin-right: 50px;
+    }
+    .right{
+        overflow:hidden;
+    }
+    .right img{
+        max-width: 100%
+    }
+{% endblock %}
+
+{% block body %}
+<div style="min-width: 900px;">
+    <div class="side">
+        <div class="textbox">
+            {% lorem 1 b %}
+        </div>
+        <br>
+        <div class="textbox">
+            {% lorem 1 b %}
+        </div>
+    </div>
+    <div class="right">
+        <img src={{ submission.imagePath }} alt="">
+    </div>
+</div>
+{% endblock %}

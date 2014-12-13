@@ -6,4 +6,4 @@ urlpatterns = patterns('',
         url(r'^$', views.splash),
         url(r'^index/', views.index),
         url(r'^submit/$', views.submit),
-        url(r'^submit/doSubmit$', views.doSubmit),)
+        url(r'^s/(\d*).*$', views.submissionView),)

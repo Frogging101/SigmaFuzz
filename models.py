@@ -23,3 +23,9 @@ class Submission(models.Model):
             return "/static/nothumb.png"
         else:
             return "/static/thumbs/"+thumbPath
+
+    def imagePath(self):
+        if self.fileName is None:
+            return "/static/notarchived.png"
+        else:
+            return "/static/content/"+self.fileName
