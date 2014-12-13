@@ -1,0 +1,33 @@
+{% extends "sigmafuzz/base.html" %}
+{% block title %}Submit{% endblock %}
+{% block style %}
+th{
+    padding-right: 10px;
+}
+.textbox{
+    width: 700px;
+}
+#id_source{
+    width: 50ch;
+}
+#id_title{
+    width: 50ch;
+}
+#id_imgSource{
+    width: 50ch;
+}
+{% endblock %}
+{% load webdesign %}
+
+{% block body %}
+<div class="textbox">
+    <form action="/submit/" autocomplete="off" method="POST">
+        {% csrf_token %}
+        <table style="margin: 0 auto;">    
+            {{ form }}
+        </table>
+        <br>
+        <input type="submit" value="Submit"><input type="submit" value="Auto-fill from source" name="import" formmethod="GET">
+    </form>
+</div>
+{% endblock %}

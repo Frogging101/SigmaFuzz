@@ -1,0 +1,30 @@
+body{
+    background-color: #3E4E5E;
+}
+#navbar{
+    margin: 0 auto;
+    display: block;
+    width: 600px;
+}
+#navbar span{
+    font-family: sans-serif;
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+    width: 33%;
+    margin-right: -8px;
+    padding: 5px 0;
+    border-width: 0 2px;
+    border-style: solid;
+}
+.textbox{
+    font-family: sans-serif;
+    font-size: 16px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #D2ECFF;
+    border-radius: 12px;
+    background-color: #A6BBC9;
+    padding: 1em;
+}
+

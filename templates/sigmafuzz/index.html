@@ -1,0 +1,28 @@
+{% extends "sigmafuzz/base.html" %}
+
+{% block title %}Index{% endblock %}
+{% block style %}
+.submissionBox{
+    display: inline-block;
+    padding: 6px;
+    border: 2px solid #D2ECFF;
+    width: 250px;
+    height: 170px;
+    text-align: center;
+    color: #FFFFFF;
+    overflow: hidden;
+}
+.submissionBox img{
+    height: 130px;
+    display: block;
+    margin: 0 auto;
+}
+{% endblock %}
+
+{% block body %}
+    {% for submission in submissionList %}
+        <div class="submissionBox">
+            <img src={{ submission.thumbPath }} alt="">{{ submission.title }}
+        </div>
+    {% endfor %}
+{% endblock %}
