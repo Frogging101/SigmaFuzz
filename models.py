@@ -18,6 +18,10 @@ class Submission(models.Model):
     #File size
     #Approved
     
+    archiveStatus = models.IntegerField(default=0)
+    archiveException = models.CharField(max_length=255, null=True, blank=True)
+    archiveDate = models.DateTimeField(null=True, blank=True)
+
     def thumbPath(self):
         if self.fileName is None:
             return "/static/nothumb.png"
