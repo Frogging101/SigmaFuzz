@@ -4,8 +4,8 @@
 {% block style %}
     .side{
         float: left;
-        width: 200px;
-        margin-right: 50px;
+        width: 225px;
+        margin-right: 25px;
     }
     .right{
         overflow:hidden;
@@ -13,21 +13,61 @@
     .right img{
         max-width: 100%
     }
+    #infotable th,td{
+        padding: 0px
+    }
+    #infotable th{
+        text-align: left;
+        padding-right: 5px;
+        font-size: 0.6em;
+    }
+    #infotable td{
+        font-size: 0.8em;
+    }
+    #title{
+        font-size: 2em !important;
+        font-weight: bold;
+        margin-left: 12px;
+    }
+    #boxtitle{
+        font-size: 1em !important;
+        font-weight:bold;
+    }
 {% endblock %}
 
 {% block body %}
 <div style="min-width: 900px;">
     <div class="side">
         <div class="textbox">
-            {% lorem 1 b %}
+            <div id="boxtitle">Info</div>
+            <table id="infotable">
+                <tr><th>Artist:</th><td>{{ submission.artist }}</td></tr>
+                <tr><th>Submitter:</th><td>{{ submission.submitter }}</td></tr>
+                <tr><th>Originally posted at:</th><td>{{ submission.submissionDate }}</td></tr>
+                <tr><th>Submitted at:</th><td>{{ submission.indexDate }}</td></tr>
+                <tr><th>Source:</th><td><a href="{{ submission.source }}">Link</a></td></tr>
+            </table>
         </div>
         <br>
         <div class="textbox">
-            {% lorem 1 b %}
+            <div id="boxtitle">Archive</div>
+            <table id="infotable">
+                <tr><th>Status: </th><td>
+                    <span style="color: {{ submission.archiveStatusColour }};font-weight: bold">
+                        {{ submission.archiveStatusString }}
+                    </span>
+                </td></tr>
+            </table>
         </div>
     </div>
     <div class="right">
-        <img src={{ submission.imagePath }} alt="">
+        <div class="textbox" style="padding: 3px !important;">
+            <div id="title">{{ submission.title }}</div>
+        </div>
+        <br>
+        <a href="{{ submission.source }}">
+            <img src={{ submission.imagePath }} alt="">
+        </a>
     </div>
 </div>
 {% endblock %}

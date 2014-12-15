@@ -4,6 +4,22 @@ import datetime
 # Create your models here.
 
 class Submission(models.Model):
+    archiveStatusStrings = [
+            "Not archived",
+            "Archived",
+            "Archiving",
+            "Failed",
+            "Pending",
+            "Retrying"]
+
+    archiveStatusColours = [
+        "#555555",
+        "green",
+        "white",
+        "red",
+        "yellow",
+        "brown"]
+
     title = models.CharField(max_length=255)
     submissionDate = models.DateTimeField(default=datetime.datetime(2034,01,18,23,40))
     indexDate = models.DateTimeField(auto_now_add=True)
@@ -33,3 +49,8 @@ class Submission(models.Model):
             return "/static/notarchived.png"
         else:
             return "/static/content/"+self.fileName
+
+    def archiveStatusString(self):
+        return self.archiveStatusStrings[self.archiveStatus]
+    def archiveStatusColour(self):
+        return self.archiveStatusColours[self.archiveStatus]
