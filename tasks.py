@@ -27,8 +27,10 @@ def archiveImg(subID):
         artist = re.sub(pattern,'_',str(submission.artist))
         title = re.sub(pattern,'_',str(submission.title))
 
+        req = urllib2.Request(submission.imgSource,headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
+
         try:
-            resp = urllib2.urlopen(submission.imgSource)
+            resp = urllib2.urlopen(req)
         except urllib2.HTTPError as e:
             submission.archiveStatus = 3
             submission.archiveException = "HTTP Error "+str(e.code)
