@@ -16,7 +16,7 @@ app = Celery('sf_tasks', broker='amqp://guest@localhost//')
 @app.task
 def archiveImg(subID):
     submission = Submission.objects.all().get(id=subID)
-    if submission.archiveStatus == 1:
+    if submission.archiveStatus == 1 and os.path.exists("/var/www/sigmafuzz/static/content/"+str(submission.fileName)):
         return 1
     try:
         submission.archiveStatus = 2
@@ -46,11 +46,12 @@ def archiveImg(subID):
         elif extension == "jpeg":
             extension = "jpg"
 
-        filename = artist+'-'+title+'sf'+subID+'.'+extension
+        filename = artist+'-'+title+'-sf'+subID+'.'+extension
         outFile = open("/var/www/sigmafuzz/static/content/"+filename,'wb')
         outFile.write(respdata)
         outFile.close()
-        submission.filename = filename
+        os.chmod("/var/www/sigmafuzz/static/content/"+filename,0644)
+        submission.fileName = filename
         submission.archiveStatus = 1
         submission.save()
     except:

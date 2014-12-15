@@ -51,6 +51,12 @@ class Submission(models.Model):
         else:
             return "/static/content/"+self.fileName
 
+    def imageLink(self):
+        if self.fileName is None:
+            return self.source
+        else:
+            return "/static/content/"+self.fileName
+
     def archiveStatusString(self):
         return self.archiveStatusStrings[self.archiveStatus]
     def archiveStatusColour(self):
