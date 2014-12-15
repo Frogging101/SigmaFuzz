@@ -25,11 +25,11 @@
         font-size: 0.8em;
     }
     #title{
-        font-size: 2em !important;
+        font-size: 1.75em !important;
         font-weight: bold;
         margin-left: 12px;
     }
-    #boxtitle{
+    .boxtitle{
         font-size: 1em !important;
         font-weight:bold;
     }
@@ -39,7 +39,8 @@
 <div style="min-width: 900px;">
     <div class="side">
         <div class="textbox">
-            <div id="boxtitle">Info</div>
+            <div class="boxtitle">Info</div>
+            <hr>
             <table id="infotable">
                 <tr><th>Artist:</th><td>{{ submission.artist }}</td></tr>
                 <tr><th>Submitter:</th><td>{{ submission.submitter }}</td></tr>
@@ -50,7 +51,8 @@
         </div>
         <br>
         <div class="textbox">
-            <div id="boxtitle">Archive</div>
+            <div class="boxtitle">Archive</div>
+            <hr>
             <table id="infotable">
                 <tr><th>Status: </th><td>
                     <span style="color: {{ submission.archiveStatusColour }};font-weight: bold">
@@ -61,13 +63,21 @@
         </div>
     </div>
     <div class="right">
-        <div class="textbox" style="padding: 3px !important;">
+        <div class="textbox" style="padding: 3px !important; max-width:600px; margin: initial !important;">
             <div id="title">{{ submission.title }}</div>
         </div>
         <br>
         <a href="{{ submission.source }}">
             <img src={{ submission.imagePath }} alt="">
         </a>
+    </div>
+    <br>
+    <div style="clear: both; width: 900px;">
+        <div class="textbox">
+            <div class="boxtitle">Description</div>
+            <hr>
+            {{ submission.description }}
+        </div>
     </div>
 </div>
 {% endblock %}
