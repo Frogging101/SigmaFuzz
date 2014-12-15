@@ -53,3 +53,14 @@ def submissionArchive(request,subID):
     response = HttpResponse(content="", status=303)
     response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
     return response
+
+def submissionArchiveErr(request,subID):
+    try:
+        submission = Submission.objects.all().get(id=subID)
+    except Submission.DoesNotExist:
+        raise Http404
+
+    if submission.archiveStackTrace is not None:
+        return HttpResponse(submission.archiveStackTrace,content_type="text/plain")
+    else:
+        return HttpResponse("No error.",content_type="text/plain")

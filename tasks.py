@@ -5,6 +5,7 @@ import urllib2
 import imghdr
 import sys
 import os
+import traceback
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sf_site.settings')
 
@@ -15,10 +16,12 @@ app = Celery('sf_tasks', broker='amqp://guest@localhost//')
 @app.task
 def archiveImg(subID):
     submission = Submission.objects.all().get(id=subID)
-    if submission.archiveStatus == 1 or submission.archiveStatus == 2:
+    if submission.archiveStatus == 1:
         return 1
     try:
         submission.archiveStatus = 2
+        submission.archiveException = None
+        submission.archiveStackTrace = None
         submission.save()
         pattern = r"[^0-9A-Za-z.~]"
         artist = re.sub(pattern,'_',str(submission.artist))
@@ -26,9 +29,9 @@ def archiveImg(subID):
 
         try:
             resp = urllib2.urlopen(submission.imgSource)
-        except urllib2.HTTPError:
+        except urllib2.HTTPError as e:
             submission.archiveStatus = 3
-            submission.archiveException = "HTTP Error "+str(resp.code)
+            submission.archiveException = "HTTP Error "+str(e.code)
             submission.save()
             return 0
         respdata = resp.read()
@@ -49,7 +52,8 @@ def archiveImg(subID):
         submission.archiveStatus = 1
         submission.save()
     except:
-        exc_type, exc_obj = sys.exc_info()[:2]
+        exc_type = sys.exc_info()[0]
+        submission.archiveStackTrace = "".join(traceback.format_exc())
         submission.archiveStatus = 3
         submission.archiveException = exc_type.__name__
         submission.save()

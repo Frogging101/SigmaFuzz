@@ -55,8 +55,14 @@
             <hr>
             <table id="infotable">
                 <tr><th>Status: </th><td>
-                    <span style="color: {{ submission.archiveStatusColour }};font-weight: bold">
+                    <span title="{{ submission.archiveException }}" style="color: {{ submission.archiveStatusColour }};font-weight: bold">
+                        {% if submission.archiveStackTrace %}
+                        <a href="/s/{{ submission.id }}/archiveErr">
+                        {% endif %}
                         {{ submission.archiveStatusString }}
+                        {% if submission.archiveStackTrace %}
+                            </a>
+                        {% endif %}
                     </span>
                 </td></tr>
             </table>
