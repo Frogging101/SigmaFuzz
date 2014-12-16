@@ -64,3 +64,7 @@ def submissionArchiveErr(request,subID):
         return HttpResponse(submission.archiveStackTrace,content_type="text/plain")
     else:
         return HttpResponse("No error.",content_type="text/plain")
+
+def about(request):
+    template = loader.get_template('sigmafuzz/about.html')
+    return HttpResponse(template.render(Context({})))

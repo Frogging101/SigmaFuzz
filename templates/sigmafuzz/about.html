@@ -1,0 +1,41 @@
+{% extends "sigmafuzz/base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block body %}
+<div class="textbox" style="max-width: 800px">
+    SigmaFuzz is a web application written in Python with the Django framework.
+    It is developed and hosted by John Brooks (myself).<br>
+    <br>
+    The general idea is something like an aggregator/archive for (clean) furry art.
+    I don't have any specific plans for it; I'm not expecting (or even vaguely intending) for it 
+    to become popular or make me all the money. It's just a project I'm doing for fun and experience.<br>
+    <br>
+    The source code is on GitHub, but only for transparency. You will notice that it does not include a
+    license; this means that I reserve all rights as copyright holder. Please don't steal it, or you will 
+    make me a sad panda.
+    <br><br>
+    <hr>
+    <h2>Questions and Answers</h2>
+    Nobody has actually asked me any questions, so this is just more information for interest's sake in a Q&A format.
+    <h3>Furry art? What the hell?</h3>
+    Yeah, I'm kinda fascinated by the <a href="http://whatisfurry.org/">furry</a> community at the moment. I guess I'm just a glutton for eccentricity and geekiness. And cute fluffy animal people, can't forget that.
+    If you have no idea what furry means, see the link I posted, and check out the art indexed here on the site.
+    <h3>What is this hosted on?</h3>
+    Right now it's hosted on a desktop computer in my house. It's running Debian stable (in a VM under 
+    Linux Mint), and it also hosts my website and some other stuff I use. It has 4.5TB of hard drive space,
+    and 8GB of RAM.<br>
+    <br>
+    Unfortunately, my residential Internet connection only affords me 7Mbps of upstream
+    bandwidth, and I'm pretty sure I'm not even allowed to host a server on it. Oh well. But the upshot of this
+    is that if I ever need it to handle more traffic, I'll need to have it hosted in a data center with a proper connection, running on a VPS or rented server.<br>
+    <br>
+    Disk space in the large amounts necessary for a site like this is enormously expensive in such arrangements
+    (Amazon S3, which is relatively cheap, would cost $300 <u>per month</u> out of my own pocket for 10TB), so 
+    a very conservative archiving approach might need to be implemented. 
+    For example, archiving rarely-accessed files on the big disks of my home server, and reserving data 
+    center storage for things that get viewed a lot. We'll see how it goes I guess.
+    <h3>You're crawling my site. What gives?</h3>
+    This application indexes and sometimes archives content from other websites. Please see <a href="/bot">this page</a> for information on indexing operations.
+</div>
+{% endblock %}
