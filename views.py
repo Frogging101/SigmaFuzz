@@ -68,3 +68,7 @@ def submissionArchiveErr(request,subID):
 def about(request):
     template = loader.get_template('sigmafuzz/about.html')
     return HttpResponse(template.render(Context({})))
+
+def bot(request):
+    template = loader.get_template('sigmafuzz/bot.html')
+    return HttpResponse(template.render(Context({})))

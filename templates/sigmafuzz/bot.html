@@ -1,0 +1,18 @@
+{% extends "sigmafuzz/base.html" %}
+{% block title %}Bots{% endblock %}
+
+{% block body %}
+<div class="textbox" style="max-width:700px;">
+    You may have noticed activity in your server logs with a link to this page in the User-Agent.
+    <br><br>
+    This application indexes submissions on various furry art websites. Indexing in this case means
+    going through submissions and storing data such as title, description, submission date, and other metadata.
+    It may also download the full submissions themselves, but this is done in a more limited fashion than 
+    indexing.
+    <br><br>
+    If the bots are misbehaving, or you just feel that they are being too aggressive, please contact me at<br>
+    <img src="http://www.fastquake.com/hamlet.png" alt=""</img>
+    <br>
+    And we can discuss it.
+</div>
+{% endblock %}

@@ -40,10 +40,10 @@ class Submission(models.Model):
     archiveDate = models.DateTimeField(null=True, blank=True)
 
     def thumbPath(self):
-        if self.fileName is None:
+        if self.fileName is None or True: #need to implement thumbnails and fix this
             return "/static/nothumb.png"
         else:
-            return "/static/thumbs/"+thumbPath
+            return "/static/thumbs/"+self.id+".png"
 
     def imagePath(self):
         if self.fileName is None:
