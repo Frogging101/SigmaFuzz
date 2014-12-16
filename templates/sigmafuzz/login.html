@@ -1,0 +1,21 @@
+{% extends "sigmafuzz/base.html" %}
+{% block title %}Login{% endblock %}
+{% block style %}
+th {
+    text-align: right;
+    padding-right: 10px;
+}
+{% endblock %}
+{% block body %}
+<div class="textbox" style="max-width: 700px;text-align:center">
+    <form action="." method="POST">
+        {% csrf_token %}
+        <table style="margin: 0 auto;">
+            <tr><th>Username:</th><td><input type="text" name="username"></td></tr>
+            <tr><th>Password:</th><td><input type="password" name="password"></td></tr>
+        </table>
+        <br>
+        <input type="submit" value="Login" style="text-align:center">
+    </form>
+</div>
+{% endblock %}

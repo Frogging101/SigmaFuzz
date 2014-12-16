@@ -8,6 +8,7 @@ urlpatterns = patterns('',
         url(r'^bot/$', views.bot),
         url(r'^index/$', views.index),
         url(r'^submit/$', views.submit),
+        url(r'^login/$', views.login),
         url(r'^s/(\d*)/?$', views.submissionView),
         url(r'^s/(\d*)/?archive$', views.submissionArchive),
         url(r'^s/(\d*)/?archiveErr$', views.submissionArchiveErr),)

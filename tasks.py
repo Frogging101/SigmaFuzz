@@ -10,7 +10,7 @@ import traceback
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sf_site.settings')
 
 from sigmafuzz.models import Submission
-from sigmafuzz.scrapers import furaffinity.scrapeSubmission
+from sigmafuzz.scrapers import furaffinity
 
 app = Celery('sf_tasks', broker='amqp://guest@localhost//')
 

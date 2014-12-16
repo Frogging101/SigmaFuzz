@@ -72,3 +72,10 @@ def about(request):
 def bot(request):
     template = loader.get_template('sigmafuzz/bot.html')
     return HttpResponse(template.render(Context({})))
+
+def login(request):
+    if request.method == 'POST':
+        pass
+    else:
+        template = loader.get_template('sigmafuzz/login.html')
+        return HttpResponse(template.render(RequestContext(request,{})))
