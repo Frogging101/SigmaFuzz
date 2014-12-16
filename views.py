@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.template import loader,Context,RequestContext
 from django.http import HttpResponse,Http404
 from django.forms import ModelForm
+from django.contrib.auth import authenticate, login
 
 from sigmafuzz.models import Submission
 import sigmafuzz.tasks as tasks
@@ -73,9 +74,23 @@ def bot(request):
     template = loader.get_template('sigmafuzz/bot.html')
     return HttpResponse(template.render(Context({})))
 
-def login(request):
+def loginView(request):
     if request.method == 'POST':
-        pass
+        username = request.POST['username']
+        password = request.POST['password']
+
+#        if username is None or password is None:
+#            return HttpResponse(template.render(RequestContext(request
+
+        user = authenticate(username=username,password=password)
+        if user is not None:
+            login(request,user)
+            resp = HttpResponse(content="", status=303)
+            resp["Location"] = "http://"+request.META['HTTP_HOST']+"/index/"
+            return resp
+        else:
+            template=loader.get_template('sigmafuzz/login.html')
+            return HttpResponse(template.render(RequestContext(request,{"error": "Invalid username or password"})))
     else:
         template = loader.get_template('sigmafuzz/login.html')
         return HttpResponse(template.render(RequestContext(request,{})))

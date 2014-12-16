@@ -8,6 +8,9 @@ th {
 {% endblock %}
 {% block body %}
 <div class="textbox" style="max-width: 700px;text-align:center">
+    {% if error %}
+    <span style="color: darkred;font-weight:bold">{{ error }}</span><br><br>
+    {% endif %}
     <form action="." method="POST">
         {% csrf_token %}
         <table style="margin: 0 auto;">
