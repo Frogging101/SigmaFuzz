@@ -10,10 +10,11 @@ import traceback
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sf_site.settings')
 
 from sigmafuzz.models import Submission
+from sigmafuzz.scrapers import furaffinity.scrapeSubmission
 
 app = Celery('sf_tasks', broker='amqp://guest@localhost//')
 
-@app.task
+@app.task(rate_limit="0.5/s")
 def archiveImg(subID):
     submission = Submission.objects.all().get(id=subID)
     if submission.archiveStatus == 1 and os.path.exists("/var/www/sigmafuzz/static/content/"+str(submission.fileName)):
@@ -60,3 +61,15 @@ def archiveImg(subID):
         submission.archiveStatus = 3
         submission.archiveException = exc_type.__name__
         submission.save()
+
+@app.task(rate_limit="2/s")
+def FA_indexSubmission(ID):
+    subDict = furaffinity.scrapeSubmission(ID)
+    newSub = Submission(**subDict)
+    newSub.submitter = "SigmaFuzz"
+    newSub.save()
+
+def FA_indexArtist(artist):
+    IDs = furaffinity.IDsFromGallery(artist)
+    for ID in IDs:
+        FA_indexSubmission.delay(ID)
