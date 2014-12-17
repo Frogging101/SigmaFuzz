@@ -5,7 +5,9 @@ from django.forms import ModelForm
 from django.contrib.auth import authenticate, login
 
 from sigmafuzz.models import Submission
-import sigmafuzz.tasks as tasks
+import sigmafuzz.tasks
+
+from celery.task.control import inspect
 
 import datetime
 
@@ -24,7 +26,7 @@ def splash(request):
 def index(request):
     submissionList = Submission.objects.all()
     template = loader.get_template('sigmafuzz/index.html')
-    return HttpResponse(template.render(Context({'submissionList': submissionList})))
+    return HttpResponse(template.render(RequestContext(request,{'submissionList': submissionList})))
 
 def submit(request):
     if request.method == 'POST':
@@ -43,14 +45,14 @@ def submissionView(request,subID):
     except Submission.DoesNotExist:
         raise Http404
     template = loader.get_template('sigmafuzz/submission.html')
-    return HttpResponse(template.render(Context({'submission': submission})))
+    return HttpResponse(template.render(RequestContext(request,{'submission': submission})))
 
 def submissionArchive(request,subID):
     try:
         submission = Submission.objects.all().get(id=subID)
     except Submission.DoesNotExist:
         raise Http404
-    tasks.archiveImg.delay(subID)
+    sigmafuzz.tasks.archiveImg.delay(subID)
     response = HttpResponse(content="", status=303)
     response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
     return response
@@ -68,11 +70,11 @@ def submissionArchiveErr(request,subID):
 
 def about(request):
     template = loader.get_template('sigmafuzz/about.html')
-    return HttpResponse(template.render(Context({})))
+    return HttpResponse(template.render(RequestContext(request,{})))
 
 def bot(request):
     template = loader.get_template('sigmafuzz/bot.html')
-    return HttpResponse(template.render(Context({})))
+    return HttpResponse(template.render(RequestContext(request,{})))
 
 def loginView(request):
     if request.method == 'POST':
@@ -94,3 +96,19 @@ def loginView(request):
     else:
         template = loader.get_template('sigmafuzz/login.html')
         return HttpResponse(template.render(RequestContext(request,{})))
+
+def tasks(request):
+    if request.method == "POST":
+        if request.user.is_authenticated():
+            sigmafuzz.tasks.testTask.delay(1,2)
+
+    template = loader.get_template('sigmafuzz/tasks.html')
+    i = inspect()
+    workers = i.stats().keys()
+    if len(workers) > 1:
+        pass #warning maybe
+
+    active = i.active()[workers[0]]
+    reserved = i.reserved()[workers[0]]
+
+    return HttpResponse(template.render(RequestContext(request,{"active": active, "reserved": reserved})))

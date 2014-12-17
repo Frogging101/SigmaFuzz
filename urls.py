@@ -9,6 +9,7 @@ urlpatterns = patterns('',
         url(r'^index/$', views.index),
         url(r'^submit/$', views.submit),
         url(r'^login/$', views.loginView),
+        url(r'^tasks/$', views.tasks),
         url(r'^s/(\d*)/?$', views.submissionView),
         url(r'^s/(\d*)/?archive$', views.submissionArchive),
         url(r'^s/(\d*)/?archiveErr$', views.submissionArchiveErr),)

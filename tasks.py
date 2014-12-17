@@ -6,6 +6,7 @@ import imghdr
 import sys
 import os
 import traceback
+import time
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sf_site.settings')
 
@@ -68,6 +69,11 @@ def FA_indexSubmission(ID):
     newSub = Submission(**subDict)
     newSub.submitter = "SigmaFuzz"
     newSub.save()
+
+@app.task
+def testTask(arg1, arg2):
+    time.sleep(30)
+    return arg1+arg2
 
 def FA_indexArtist(artist):
     IDs = furaffinity.IDsFromGallery(artist)

@@ -1,0 +1,29 @@
+{% extends "sigmafuzz/base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block style %}
+table, td, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+{% endblock %}
+{% block body %}
+<div class="textbox" style="max-width: 700px">
+    <table style="margin:0 auto;">
+        <th>Name</th><th>Arguments</th>
+        <tr><th>Active</th></tr>
+        {% for task in active %}
+            <tr><td>{{ task.name }}</td><td>{{ task.args }}</td></tr>
+        {% endfor %}
+        <tr><th>Pending</th></tr>
+        {% for task in reserved %}
+            <tr><td>{{ task.name }}</td><td>{{ task.args }}</td></tr>
+        {% endfor %}
+    </table>
+    <br> 
+    Generate test task
+    <form action="." method="POST">
+        {% csrf_token %}
+        <input type="submit">
+    </form>
+</div>
+{% endblock %}
