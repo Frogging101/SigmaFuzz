@@ -66,6 +66,9 @@
                     </span>
                 </td></tr>
             </table>
+            {% if user.is_superuser %}
+                <form action="/s/{{ submission.id }}/archive"><input type="submit" value="Archive"></form>
+            {% endif %}
         </div>
     </div>
     <div class="right">

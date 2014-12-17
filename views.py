@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.template import loader,Context,RequestContext
-from django.http import HttpResponse,Http404
+from django.http import HttpResponse,Http404,HttpResponseForbidden
 from django.forms import ModelForm
 from django.contrib.auth import authenticate, login
 
@@ -30,10 +30,16 @@ def index(request):
 
 def submit(request):
     if request.method == 'POST':
-        form = SubmitForm(request.POST)
-        form.is_valid()
-        form.save()
-        return HttpResponse("success",content_type="text/plain")
+        if "submit" in request.POST:
+            form = SubmitForm(request.POST)
+            form.is_valid()
+            form.save()
+            return HttpResponse("success",content_type="text/plain")
+        
+        elif "fa_crawl_artist" in request.POST and request.user.is_superuser:
+            ca = sigmafuzz.tasks.FA_indexArtist(request.POST["artist"])
+            return HttpResponse("success",content_type="text/plain")
+            
     else:
         template = loader.get_template('sigmafuzz/submit.html')
         form = SubmitForm()
@@ -52,10 +58,13 @@ def submissionArchive(request,subID):
         submission = Submission.objects.all().get(id=subID)
     except Submission.DoesNotExist:
         raise Http404
-    sigmafuzz.tasks.archiveImg.delay(subID)
-    response = HttpResponse(content="", status=303)
-    response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
-    return response
+    if request.user.is_superuser:
+        sigmafuzz.tasks.archiveImg.delay(subID)
+        response = HttpResponse(content="", status=303)
+        response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
+        return response
+    else:
+        return HttpResponseForbidden()
 
 def submissionArchiveErr(request,subID):
     try:
@@ -110,5 +119,8 @@ def tasks(request):
 
     active = i.active()[workers[0]]
     reserved = i.reserved()[workers[0]]
+    scheduled = [e['request'] for e in i.scheduled()[workers[0]]]
 
-    return HttpResponse(template.render(RequestContext(request,{"active": active, "reserved": reserved})))
+    pending = reserved+scheduled
+
+    return HttpResponse(template.render(RequestContext(request,{"active": active, "pending": pending})))

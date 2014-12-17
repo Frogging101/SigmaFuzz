@@ -15,7 +15,7 @@ table, td, th {
             <tr><td>{{ task.name }}</td><td style="text-align:right">{{ task.args }}</td></tr>
         {% endfor %}
         <tr><th colspan="2">Pending</th></tr>
-        {% for task in reserved %}
+        {% for task in pending %}
             <tr><td>{{ task.name }}</td><td style="text-align:right">{{ task.args }}</td></tr>
         {% endfor %}
     </table>

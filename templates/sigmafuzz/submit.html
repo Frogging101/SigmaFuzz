@@ -1,11 +1,8 @@
 {% extends "sigmafuzz/base.html" %}
 {% block title %}Submit{% endblock %}
 {% block style %}
-#submitTable th{
+.submitTable th{
     padding-right: 10px;
-}
-#submitBox {
-    width: 700px;
 }
 #id_source{
     width: 50ch;
@@ -16,18 +13,32 @@
 #id_imgSource{
     width: 50ch;
 }
+
 {% endblock %}
 {% load webdesign %}
 
 {% block body %}
-<div class="textbox" id="submitBox">
+<div class="textbox" style="max-width: 700px">
     <form action="/submit/" autocomplete="off" method="POST">
         {% csrf_token %}
-        <table id="submitTable" style="margin: 0 auto;">    
+        <table class="submitTable" style="margin: 0 auto;">    
             {{ form }}
         </table>
         <br>
         <input type="submit" value="Submit"><input type="submit" value="Auto-fill from source" name="import">
     </form>
 </div>
+
+{% if user.is_superuser %}
+<br>
+<div class="textbox" style="max-width: 700px">
+    <table class="submitTable">
+        <tr><th>Crawl artist (FurAffinity):</th> <td><form action="." method="POST"> {% csrf_token %}
+            <input type="text" name="artist" class="textInput">
+            <input type="submit" value="Crawl" name="fa_crawl_artist">
+        </form>
+        </td></tr> 
+    </table>
+</div>
+{% endif %}
 {% endblock %}
