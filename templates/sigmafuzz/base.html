@@ -9,10 +9,13 @@
         </style>
     </head>
     <body>
-        <div>
-            <a href="/"><img id="logo" height="100" src="/static/sigmafuzz.png" alt=""></a>
+        <div style="height: 100px">
+            <a href="/"><img id="logo" height="100" src="/static/sigmafuzz.png" style="float:left" alt=""></a>
             {% if user.is_authenticated %}
-                <div class="textbox" style="max-width: auto;float: right; padding: 3px;vertical-align:bottom">
+                <div class="textbox" style="max-width: auto; float:left; margin-left: 20px; padding: 3px">
+                    <a href="/tasks">Tasks</a>
+                </div>
+                <div class="textbox" style="max-width: auto; float: right; padding: 3px;vertical-align:bottom">
                     Logged in as {{ user.username }}
                     <span style="text-align: center">
                         <form action="/logout" method="POST">
