@@ -12,8 +12,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sf_site.settings')
 
 from sigmafuzz.models import Submission
 from sigmafuzz.scrapers import furaffinity
+import sigmafuzz.tasks.thumbs_tasks
 
-app = Celery('sf_tasks', broker='amqp://guest@localhost//')
+app = Celery('sf_tasks', broker='amqp://guest@localhost//', backend="amqp")
+
+app.conf.update(CELERY_ROUTES={'sigmafuzz.tasks.thumbs_tasks.genThumb': {'queue': 'thumbs'}})
 
 @app.task(rate_limit="0.5/s")
 def archiveImg(subID):
@@ -79,3 +82,23 @@ def FA_indexArtist(artist):
     IDs = furaffinity.IDsFromGallery(artist)
     for ID in IDs:
         FA_indexSubmission.delay(ID)
+
+@app.task
+def genThumb(subID):
+    if os.path.exists("/var/www/sigmafuzz/static/thumbs/"+str(subID)+".jpg"):
+        return
+    submission = Submission.objects.all().get(id=subID)
+    result = sigmafuzz.tasks.thumbs_tasks.genThumb.delay(submission.imgSource,subID)
+    retval = result.get()
+
+    req = urllib2.Request(retval,headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
+    resp = urllib2.urlopen(req)
+
+    data = resp.read()
+    o = open('/var/www/sigmafuzz/static/thumbs/'+str(subID)+".jpg",'wb')
+    o.write(data)
+    o.close()
+    os.chmod("/var/www/sigmafuzz/static/thumbs/"+str(subID)+".jpg",0644)
+
+    submission.thumbnailed = True
+    submission.save()

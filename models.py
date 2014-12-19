@@ -39,11 +39,13 @@ class Submission(models.Model):
     archiveStackTrace = models.TextField(null=True, blank=True)
     archiveDate = models.DateTimeField(null=True, blank=True)
 
+    thumbnailed = models.BooleanField(default=False)
+
     def thumbPath(self):
-        if self.fileName is None or True: #need to implement thumbnails and fix this
+        if not self.thumbnailed:
             return "/static/nothumb.png"
         else:
-            return "/static/thumbs/"+self.id+".png"
+            return "/static/thumbs/"+str(self.id)+".jpg"
 
     def imagePath(self):
         if self.fileName is None:

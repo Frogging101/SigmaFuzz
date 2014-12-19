@@ -5,7 +5,7 @@ from django.forms import ModelForm
 from django.contrib.auth import authenticate, login
 
 from sigmafuzz.models import Submission
-import sigmafuzz.tasks
+import sigmafuzz.tasks.sf_tasks
 
 from celery.task.control import inspect
 
@@ -109,7 +109,10 @@ def loginView(request):
 def tasks(request):
     if request.method == "POST":
         if request.user.is_authenticated():
-            sigmafuzz.tasks.testTask.delay(1,2)
+            if 'test' in request.POST:
+                sigmafuzz.tasks.sf_tasks.testTask(1,2)
+            elif 'genthumb' in request.POST:
+                sigmafuzz.tasks.sf_tasks.genThumb.delay(request.POST['id'])
 
     template = loader.get_template('sigmafuzz/tasks.html')
     i = inspect()

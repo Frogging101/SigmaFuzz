@@ -19,11 +19,20 @@ table, td, th {
             <tr><td>{{ task.name }}</td><td style="text-align:right">{{ task.args }}</td></tr>
         {% endfor %}
     </table>
-    <br> 
+    <hr>
+    <h2>Testing</h2>
     Generate test task
     <form action="." method="POST">
         {% csrf_token %}
-        <input type="submit">
+        <input name="test" type="submit">
+    </form>
+    <br>
+    Generate thumbnail
+    <br>
+    <form action="." method="POST">
+        {% csrf_token %}
+        <input name="id" type="number">
+        <input name="genthumb" type="submit">
     </form>
 </div>
 {% endblock %}
