@@ -59,7 +59,7 @@ def submissionArchive(request,subID):
     except Submission.DoesNotExist:
         raise Http404
     if request.user.is_superuser:
-        sigmafuzz.tasks.archiveImg.delay(subID)
+        sigmafuzz.tasks.sf_tasks.archiveImg.delay(subID)
         response = HttpResponse(content="", status=303)
         response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
         return response

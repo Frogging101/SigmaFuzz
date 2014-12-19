@@ -23,7 +23,7 @@ webroot = "/var/www/sf_thumbs/"
 webroot_dl = webroot+"dl/"
 webroot_thumbs = webroot+"thumbs/"
 
-@app.task
+@app.task(rate_limit="0.5/s")
 def genThumb(imageURL,subID):
     if not os.path.exists(webroot_dl):
         os.makedirs(webroot_dl)
