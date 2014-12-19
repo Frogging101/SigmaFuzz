@@ -32,15 +32,18 @@ def archiveImg(subID):
         artist = re.sub(pattern,'_',str(submission.artist))
         title = re.sub(pattern,'_',str(submission.title))
 
-        req = urllib2.Request(submission.imgSource,headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
-
-        try:
+        try: #Try and get it from the thumbnail site in case it's there already
+            req = urllib2.Request("http://thumbs.sigmafuzz.net/dl/"+str(subID),headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
             resp = urllib2.urlopen(req)
-        except urllib2.HTTPError as e:
-            submission.archiveStatus = 3
-            submission.archiveException = "HTTP Error "+str(e.code)
-            submission.save()
-            return 0
+        except:
+            req = urllib2.Request(submission.imgSource,headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
+            try:
+                resp = urllib2.urlopen(req)
+            except urllib2.HTTPError as e:
+                submission.archiveStatus = 3
+                submission.archiveException = "HTTP Error "+str(e.code)
+                submission.save()
+                return 0
         respdata = resp.read()
         extension = imghdr.what('',respdata)
         if extension is None:
@@ -51,7 +54,7 @@ def archiveImg(subID):
         elif extension == "jpeg":
             extension = "jpg"
 
-        filename = artist+'-'+title+'-sf'+subID+'.'+extension
+        filename = artist+'-'+title+'-sf'+str(subID)+'.'+extension
         outFile = open("/var/www/sigmafuzz/static/content/"+filename,'wb')
         outFile.write(respdata)
         outFile.close()
@@ -72,6 +75,7 @@ def FA_indexSubmission(ID):
     newSub = Submission(**subDict)
     newSub.submitter = "SigmaFuzz"
     newSub.save()
+    genThumb.delay(newSub.id)
 
 @app.task
 def testTask(arg1, arg2):
