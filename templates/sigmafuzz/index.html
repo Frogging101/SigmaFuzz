@@ -23,13 +23,31 @@
         color: #FFFFFF;
         text-decoration: none;
     }
+    #pages{
+        border: 2px solid lightgreen;
+        display: inline-block;
+        text-align: center
+        width: auto;
+        height: 1em;
+        background-color: #A6BBC9;
+        padding: 6px;
+    }
 {% endblock %}
 
 {% block body %}
-    {% for submission in submissionList %}
-        <div class="submissionBox">
-            <a href="/s/{{ submission.id }}"><img src={{ submission.thumbPath }} alt=""></a>
-            <a href="/s/{{ submission.id }}">{{ submission.title }}</a>
+    <div style="text-align: center">
+        {% for submission in submissionList %}
+            <div class="submissionBox">
+                <a href="/s/{{ submission.id }}"><img src={{ submission.thumbPath }} alt=""></a>
+                <a href="/s/{{ submission.id }}">{{ submission.title }}</a>
+            </div>
+        {% endfor %}
+        <br>
+        <br>
+        <div id="pages">
+            <a href="/index/{{ page }}">&lt&ltPrev</a>
+            <b>{{ page|add:'1' }}</b>
+            <a href="/index/{{ page|add:'2' }}">Next&gt&gt</a>            
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

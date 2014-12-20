@@ -23,10 +23,20 @@ def splash(request):
     template = loader.get_template('sigmafuzz/splash.html')
     return HttpResponse(template.render(Context({'timestamp': datetime.datetime.now().isoformat(' ')})))
 
-def index(request):
-    submissionList = Submission.objects.all()
+def index(request,page):
+    perPage = 100 #this should be centrally configured at some point
+
+    if page == '':
+        page = 0
+    else:
+        page = max(0,int(page)-1)
+
+    submissions = Submission.objects.all().order_by('-id')
+    start = page*perPage
+    end = (page+1)*perPage
+
     template = loader.get_template('sigmafuzz/index.html')
-    return HttpResponse(template.render(RequestContext(request,{'submissionList': submissionList})))
+    return HttpResponse(template.render(RequestContext(request,{'submissionList': submissions[start:end], 'page': page})))
 
 def submit(request):
     if request.method == 'POST':
