@@ -18,7 +18,7 @@ app = Celery('sf_tasks', broker='amqp://guest@localhost//', backend="amqp")
 
 app.conf.update(CELERY_ROUTES={'sigmafuzz.tasks.thumbs_tasks.genThumb': {'queue': 'thumbs'}})
 
-@app.task(rate_limit="0.5/s")
+@app.task(rate_limit="0.5/s",ignore_result=True)
 def archiveImg(subID):
     submission = Submission.objects.all().get(id=subID)
     if submission.archiveStatus == 1 and os.path.exists("/var/www/sigmafuzz/static/content/"+str(submission.fileName)):
@@ -69,7 +69,7 @@ def archiveImg(subID):
         submission.archiveException = exc_type.__name__
         submission.save()
 
-@app.task(rate_limit="2/s")
+@app.task(rate_limit="2/s",ignore_result=True)
 def FA_indexSubmission(ID):
     subDict = furaffinity.scrapeSubmission(ID)
     newSub = Submission(**subDict)
