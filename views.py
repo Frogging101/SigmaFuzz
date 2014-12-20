@@ -35,8 +35,27 @@ def index(request,page):
     start = page*perPage
     end = (page+1)*perPage
 
+    if request.GET.get('napp') == 'on':
+        napp = "checked"
+    else:
+        napp = ""
+    if request.GET.get('narc') == 'on' or 'opt' not in request.GET:
+        narc = "checked"
+    else:
+        narc = ""
+
+    if narc != "checked":
+        submissions = submissions.filter(archiveStatus=1)
+    if napp != "checked":
+        submissions = submissions.filter(approved=True)
+
     template = loader.get_template('sigmafuzz/index.html')
-    return HttpResponse(template.render(RequestContext(request,{'submissionList': submissions[start:end], 'page': page})))
+    return HttpResponse(template.render(RequestContext(
+        request,{'submissionList': submissions[start:end],
+            'page': page,
+            'napp': napp,
+            'narc': narc,
+            'get': request.GET})))
 
 def submit(request):
     if request.method == 'POST':

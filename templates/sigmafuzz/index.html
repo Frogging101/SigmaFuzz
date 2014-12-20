@@ -23,6 +23,19 @@
         color: #FFFFFF;
         text-decoration: none;
     }
+    #options{
+        background-color: #A6BBC9;
+        max-width: 270px;
+        display: block;
+        margin: 0 auto;
+    }
+    #options span{
+        display: inline-block;
+        font-family: sans-serif;
+        text-align: center;
+        width: 50%;
+        margin-right: -4px;
+    }
     #pages{
         border: 2px solid lightgreen;
         display: inline-block;
@@ -35,6 +48,16 @@
 {% endblock %}
 
 {% block body %}
+    <div id="options">
+        <form method="GET">
+            <span><input type="checkbox" name="napp" {{ napp }}> Unapproved</span>
+            <span><input type="checkbox" name="narc" {{ narc }}> Unarchived</span>
+            <br>
+            <input type="hidden" name="opt" value="1">
+            <div style="text-align: center"><input type="submit" value="Submit"></div>
+        </form>
+    </div>
+    <br>
     <div style="text-align: center">
         {% for submission in submissionList %}
             <div class="submissionBox">
@@ -45,9 +68,9 @@
         <br>
         <br>
         <div id="pages">
-            <a href="/index/{{ page }}">&lt&ltPrev</a>
+            <a href="/index/{{ page }}?{{ get.urlencode }}">&lt&ltPrev</a>
             <b>{{ page|add:'1' }}</b>
-            <a href="/index/{{ page|add:'2' }}">Next&gt&gt</a>            
+            <a href="/index/{{ page|add:'2' }}?{{ get.urlencode }}">Next&gt&gt</a>            
         </div>
     </div>
 {% endblock %}

@@ -32,7 +32,7 @@ class Submission(models.Model):
     imgSource = models.URLField()
     fileName = models.CharField(max_length=255,blank=True,null=True)
     #File size
-    #Approved
+    approved = models.BooleanField(default=False)
     
     archiveStatus = models.IntegerField(default=0)
     archiveException = models.CharField(max_length=255, null=True, blank=True)
