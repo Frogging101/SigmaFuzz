@@ -13,4 +13,5 @@ urlpatterns = patterns('',
         url(r'^s/(\d*)/?$', views.submissionView),
         url(r'^s/(\d*)/?archival$', views.submissionArchival),
         url(r'^s/(\d*)/?approval$', views.submissionApproval),
+        url(r'^s/(\d*)/?hidden$', views.submissionHidden),
         url(r'^s/(\d*)/?archiveErr$', views.submissionArchiveErr),)

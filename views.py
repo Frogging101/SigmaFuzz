@@ -39,6 +39,7 @@ def index(request,page):
 
     appd = int(request.GET.get("appd",1))
     arcd = int(request.GET.get("arcd",2))
+    hidd = int(request.GET.get("hidd",0))
 
     if appd == 0:
         submissions = submissions.filter(approved=False)
@@ -49,6 +50,9 @@ def index(request,page):
         submissions = submissions.exclude(archiveStatus=1)
     elif arcd == 1:
         submissions = submissions.filter(approved=True)
+
+    if hidd == 0 or not request.user.is_superuser:
+        submissions = submissions.exclude(hidden=True)
 
     template = loader.get_template('sigmafuzz/index.html')
     return HttpResponse(template.render(RequestContext(
@@ -79,6 +83,10 @@ def submissionView(request,subID):
         submission = Submission.objects.all().get(id=subID)
     except Submission.DoesNotExist:
         raise Http404
+
+    if submission.hidden and not request.user.is_superuser:
+        return HttpResponseForbidden()
+
     template = loader.get_template('sigmafuzz/submission.html')
     return HttpResponse(template.render(RequestContext(request,{'submission': submission})))
 
@@ -126,6 +134,32 @@ def submissionApproval(request,subID):
             submission.approved = not submission.approved
         submission.save()
         return response
+
+def submissionHidden(request,subID):
+    try:
+        submission = Submission.objects.all().get(id=subID)
+    except Submission.DoesNotExist:
+        raise Http404
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    if request.user.is_superuser:
+        response = HttpResponse(content="",status=303)
+        response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
+
+        if request.POST.get("set") == "true":
+            submission.hidden = True
+        elif request.POST.get("set") == "false":
+            submission.hidden = False
+        else:
+            submission.hidden = not submission.hidden
+        submission.save()
+        return response
+
+def submissionDelete(request,subID):
+    #Delete submission; requires ability to delete archive+thumbs
+    return HttpResponse(content="",status=501)
 
 def submissionArchiveErr(request,subID):
     try:

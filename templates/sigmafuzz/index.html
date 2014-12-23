@@ -86,7 +86,7 @@
     <br>
     <div id="main" style="text-align: center">
         {% for submission in submissionList %}
-        <div class="submissionBox" data-appd="{{ submission.approved|yesno:"true,false" }}" data-arcd="{% if submission.archiveStatus == 1 %}true{% else %}false{% endif %}" data-id="{{ submission.id }}">
+        <div class="submissionBox" data-appd="{{ submission.approved|yesno:"true,false" }}" data-arcd="{% if submission.archiveStatus == 1 %}true{% else %}false{% endif %}" data-id="{{ submission.id }}" data-hidd="{{ submission.hidden|yesno:"true,false" }}">
                 <a href="/s/{{ submission.id }}"><img src={{ submission.thumbPath }} alt=""></a>
                 <a href="/s/{{ submission.id }}">{{ submission.title }}</a>
             </div>

@@ -9,6 +9,9 @@ var ol = "\
                 Archive\
             </td>\
         </tr>\
+        <tr>\
+            <td id=\"hid_td\" style=\"vertical-align:middle;border-top: 1px solid #000000;\" colspan=\"2\">Hide</td>\
+        </tr>\
     </table>\
 </div>"
 
@@ -26,12 +29,10 @@ function arc(id,arcd,arc_td,subbox){
 
     subbox.attr("data-arcd",String(arcd));
 
-    if (arcd) {
+    if (arcd)
         arc_td.text("Unarchive");
-    }
-    else{
+    else
         arc_td.text("Archive");
-    }
 }
 function app(id,appd,app_td,subbox){
     var approveURL="http://"+window.location.hostname+"/s/"+id+"/approval";
@@ -41,12 +42,23 @@ function app(id,appd,app_td,subbox){
 
     subbox.attr("data-appd",String(appd));
 
-    if (appd) {
+    if (appd)
         app_td.text("Unapprove");
-    }
-    else{
+    else
         app_td.text("Approve");
-    }
+}
+function hid(id,hidd,hid_td,subbox){
+    var hideURL="http://"+window.location.hostname+"/s/"+id+"/hidden";
+    hidd = !hidd;
+
+    post(hideURL,{"set": String(hidd)});
+
+    subbox.attr("data-hidd",String(hidd));
+
+    if(hidd)
+        hid_td.text("Unhide");
+    else
+        hid_td.text("Hide");
 }
 
 function noOverlay(){
@@ -61,18 +73,21 @@ function showOverlay(subbox){
     subbox.on("mouseleave",function(){ overlay.remove();});
     var app_td = overlay.find("#app_td");
     var arc_td = overlay.find("#arc_td");
+    var hid_td = overlay.find("#hid_td");
     var appd = (subbox.attr("data-appd") === "true");
     var arcd = (subbox.attr("data-arcd") === "true");
+    var hidd = (subbox.attr("data-hidd") === "true");
 
     arc_td.on("click tap", function(){ arc(subbox.attr("data-id"),arcd,arc_td,subbox);});
     app_td.on("click tap", function(){ app(subbox.attr("data-id"),appd,app_td,subbox);});
+    hid_td.on("click tap", function(){ hid(subbox.attr("data-id"),hidd,hid_td,subbox);});
 
-    if (appd) {
+    if (appd)
         app_td.text("Unapprove");
-    }
-    if (arcd) {
+    if (arcd)
         arc_td.text("Unarchive");
-    }
+    if(hidd)
+        hid_td.text("Unhide");
 }
 
 var hlid = -1;
@@ -108,13 +123,17 @@ function kbHandler(e){
     var overlay = subbox.find(".overlay");
     var app_td = overlay.find("#app_td");
     var arc_td = overlay.find("#arc_td");
+    var hid_td = overlay.find("#hid_td");
     var appd = (subbox.attr("data-appd") === "true");
     var arcd = (subbox.attr("data-arcd") === "true");
+    var hidd = (subbox.attr("data-hidd") === "true");
 
     if(e.which == 81 || e.which == 113)
         app(subbox.attr("data-id"),appd,app_td,subbox);
     else if(e.which == 87 || e.which == 119)
         arc(subbox.attr("data-id"),arcd,arc_td,subbox);
+    else if(e.which == 69 || e.which == 101)
+        hid(subbox.attr("data-id"),hidd,hid_td,subbox);
 }
 
 $(document).ready(
