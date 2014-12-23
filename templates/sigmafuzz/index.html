@@ -64,8 +64,20 @@
 {% block body %}
     <div id="options">
         <form method="GET">
-            <span><input type="checkbox" name="napp" {{ napp }}> Unapproved</span>
-            <span><input type="checkbox" name="narc" {{ narc }}> Unarchived</span>
+            <span>
+                <select name="appd">
+                    <option value="0" {% if appd == 0 %}selected{% endif %}>Unapproved</option>
+                    <option value="1" {% if appd == 1 %}selected{% endif %}>Approved</option>
+                    <option value="2" {% if appd == 2 %}selected{% endif %}>Both</option>
+                </select>
+            </span>
+            <span>
+                <select name="arcd">
+                    <option value="0" {% if arcd == 0 %}selected{% endif %}>Unarchived</option>
+                    <option value="1" {% if arcd == 1 %}selected{% endif %}>Archived</option>
+                    <option value="2" {% if arcd == 2 %}selected{% endif %}>Both</option>
+                </select>
+            </span>
             <br>
             <input type="hidden" name="opt" value="1">
             <div style="text-align: center"><input type="submit" value="Submit"></div>
