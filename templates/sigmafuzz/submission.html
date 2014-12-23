@@ -47,6 +47,8 @@
                 <tr><th>Originally posted at:</th><td>{{ submission.submissionDate }}</td></tr>
                 <tr><th>Submitted at:</th><td>{{ submission.indexDate }}</td></tr>
                 <tr><th>Source:</th><td><a href="{{ submission.source }}">Link</a></td></tr>
+                <tr><th>Approved:</th><td style="color:{{ submission.approved|yesno:"green,darkred" }}"><b>{{ submission.approved|yesno:"Yes,No" }}</b></td></tr>
+                <tr><th>Hidden:</th><td style="color:{{ submission.hidden|yesno:"darkred,green" }}"><b>{{ submission.hidden|yesno:"Yes,No" }}</b></td></tr>
             </table>
         </div>
         <br>
