@@ -69,7 +69,6 @@ def submit(request):
         elif "fa_crawl_artist" in request.POST and request.user.is_superuser:
             ca = sigmafuzz.tasks.sf_tasks.FA_indexArtist(request.POST["artist"])
             return HttpResponse("success",content_type="text/plain")
-
     else:
         template = loader.get_template('sigmafuzz/submit.html')
         form = SubmitForm()

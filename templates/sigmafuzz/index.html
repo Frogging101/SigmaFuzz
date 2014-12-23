@@ -84,7 +84,7 @@
         </form>
     </div>
     <br>
-    <div style="text-align: center">
+    <div id="main" style="text-align: center">
         {% for submission in submissionList %}
         <div class="submissionBox" data-appd="{{ submission.approved|yesno:"true,false" }}" data-arcd="{% if submission.archiveStatus == 1 %}true{% else %}false{% endif %}" data-id="{{ submission.id }}">
                 <a href="/s/{{ submission.id }}"><img src={{ submission.thumbPath }} alt=""></a>

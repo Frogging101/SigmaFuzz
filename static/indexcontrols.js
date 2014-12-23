@@ -49,30 +49,82 @@ function app(id,appd,app_td,subbox){
     }
 }
 
+function noOverlay(){
+    $(".overlay").remove();
+}
+
+function showOverlay(subbox){
+    noOverlay();
+    subbox.append(ol);
+    var overlay = subbox.find(".overlay");
+    overlay.on("mouseout",function(){ $(this).remove();});
+    subbox.on("mouseleave",function(){ overlay.remove();});
+    var app_td = overlay.find("#app_td");
+    var arc_td = overlay.find("#arc_td");
+    var appd = (subbox.attr("data-appd") === "true");
+    var arcd = (subbox.attr("data-arcd") === "true");
+
+    arc_td.on("click tap", function(){ arc(subbox.attr("data-id"),arcd,arc_td,subbox);});
+    app_td.on("click tap", function(){ app(subbox.attr("data-id"),appd,app_td,subbox);});
+
+    if (appd) {
+        app_td.text("Unapprove");
+    }
+    if (arcd) {
+        arc_td.text("Unarchive");
+    }
+}
+
+var hlid = -1;
+
+function kbHandler(e){
+    if(e.which <= 40 && e.which >=37)
+        e.preventDefault();
+    if(e.which == 39)
+        hlid++;
+    else if(e.which == 37){
+        hlid--;
+    }
+    else if((e.which == 38 || e.which == 40) && hlid > -1){
+        var subboxWidth = $(".submissionBox")[0].offsetWidth;
+        var mainWidth = $("#main")[0].clientWidth;
+
+        var perRow = parseInt(mainWidth/subboxWidth);
+        if(e.which == 38)
+            hlid -= perRow;
+        else
+            hlid += perRow;
+    }
+    if(hlid < -1)
+        hlid = -1;
+    if(hlid == -1)
+        noOverlay();
+    var subbox = $("div.submissionBox:eq("+hlid+")");
+    showOverlay(subbox);
+
+    if(hlid == -1)
+        return;
+
+    var overlay = subbox.find(".overlay");
+    var app_td = overlay.find("#app_td");
+    var arc_td = overlay.find("#arc_td");
+    var appd = (subbox.attr("data-appd") === "true");
+    var arcd = (subbox.attr("data-arcd") === "true");
+
+    if(e.which == 81 || e.which == 113)
+        app(subbox.attr("data-id"),appd,app_td,subbox);
+    else if(e.which == 87 || e.which == 119)
+        arc(subbox.attr("data-id"),arcd,arc_td,subbox);
+}
+
 $(document).ready(
     function(){
         $(".submissionBox img").parent("a").on({
             "mouseover tap": function(){
-                var subbox = $(this).parents("div .submissionBox");
-                subbox.append(ol);
-                var overlay = $(this).parents("div .submissionBox").find(".overlay");
-                overlay.on("mouseout",function(){ $(this).remove();});
-                subbox.on("mouseleave",function(){ overlay.remove();});
-                var app_td = overlay.find("#app_td");
-                var arc_td = overlay.find("#arc_td");
-                var appd = (subbox.attr("data-appd") === "true");
-                var arcd = (subbox.attr("data-arcd") === "true");
-
-                arc_td.on("click tap", function(){ arc(subbox.attr("data-id"),arcd,arc_td,subbox);});
-                app_td.on("click tap", function(){ app(subbox.attr("data-id"),appd,app_td,subbox);});
-
-                if (appd) {
-                    app_td.text("Unapprove");
-                }
-                if (arcd) {
-                    arc_td.text("Unarchive");
-                }
+                subbox = $(this).parent(".submissionBox");
+                showOverlay(subbox);
             }
         });
+        $(document).keydown(kbHandler);
     }
 );
