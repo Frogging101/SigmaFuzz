@@ -15,16 +15,16 @@ var ol = "\
 var csrft = $.cookie("csrftoken");
 
 function post(url,data){
-    jquery.ajax(url, {headers: {"X-CSRFToken": csrft},data: data,type: "post",async: false});
+    jQuery.ajax(url, {headers: {"X-CSRFToken": csrft},data: data,type: "post",async: false});
 }
 
 function arc(id,arcd,arc_td,subbox){
     var archiveURL = "http://"+window.location.hostname+"/s/"+id+"/archival";
     arcd = !arcd;
 
-    post(archiveURL,{"set": string(arcd)});
+    post(archiveURL,{"set": String(arcd)});
 
-    subbox.attr("data-arcd",string(arcd));
+    subbox.attr("data-arcd",String(arcd));
 
     if (arcd) {
         arc_td.text("Unarchive");
@@ -37,9 +37,9 @@ function app(id,appd,app_td,subbox){
     var approveURL="http://"+window.location.hostname+"/s/"+id+"/approval";
     appd = !appd;
 
-    post(approveURL,{"set": string(appd)});
+    post(approveURL,{"set": String(appd)});
 
-    subbox.attr("data-appd",string(appd));
+    subbox.attr("data-appd",String(appd));
 
     if (appd) {
         app_td.text("Unapprove");

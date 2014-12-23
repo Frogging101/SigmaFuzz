@@ -70,7 +70,7 @@ def submit(request):
         elif "fa_crawl_artist" in request.POST and request.user.is_superuser:
             ca = sigmafuzz.tasks.sf_tasks.FA_indexArtist(request.POST["artist"])
             return HttpResponse("success",content_type="text/plain")
-            
+
     else:
         template = loader.get_template('sigmafuzz/submit.html')
         form = SubmitForm()
@@ -94,15 +94,16 @@ def submissionArchival(request,subID):
         return HttpResponseNotAllowed(['POST'])
 
     if request.user.is_superuser:
+        response = HttpResponse(content="", status=303)
+        response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
+
         if request.POST.get("set") == "true" or request.POST.get("set") is None:
             sigmafuzz.tasks.sf_tasks.archiveImg.delay(subID)
-            response = HttpResponse(content="", status=303)
-            response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
-            return response
         elif request.POST.get("set") == "false":
             pass #Unarchive
         elif request.POST.get("set") is None: #Already caught above, but ultimately should be caught here
             pass
+        return response
     else:
         return HttpResponseForbidden()
 
@@ -116,6 +117,9 @@ def submissionApproval(request,subID):
         return HttpResponseNotAllowed(['POST'])
 
     if request.user.is_superuser:
+        response = HttpResponse(content="", status=303)
+        response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
+
         if request.POST.get("set") == "true":
             submission.approved = True
         elif request.POST.get("set") == "false":
@@ -123,6 +127,7 @@ def submissionApproval(request,subID):
         else:
             submission.approved = not submission.approved
         submission.save()
+        return response
 
 def submissionArchiveErr(request,subID):
     try:
