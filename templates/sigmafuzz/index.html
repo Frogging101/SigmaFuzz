@@ -11,6 +11,7 @@
         text-align: center;
         color: #FFFFFF;
         overflow: hidden;
+        position: relative;
     }
     .submissionBox img{
         height: 130px;
@@ -45,8 +46,21 @@
         background-color: #A6BBC9;
         padding: 6px;
     }
+    .overlay{
+        position: absolute;
+        top: 6px;
+        left: 0px;
+        width: 100%;
+        height: 130px;
+        background-color: rgba(22,22,22,.3);
+        font-weight: bold;
+    }
 {% endblock %}
-
+{% block head %}
+    {% if user.is_superuser %}
+        <script src="/static/indexcontrols.js" defer></script>
+    {% endif %}
+{% endblock %}
 {% block body %}
     <div id="options">
         <form method="GET">
@@ -60,7 +74,7 @@
     <br>
     <div style="text-align: center">
         {% for submission in submissionList %}
-            <div class="submissionBox">
+        <div class="submissionBox" data-appd="{{ submission.approved|yesno:"true,false" }}" data-arcd="{% if submission.archiveStatus == 1 %}true{% else %}false{% endif %}" data-id="{{ submission.id }}">
                 <a href="/s/{{ submission.id }}"><img src={{ submission.thumbPath }} alt=""></a>
                 <a href="/s/{{ submission.id }}">{{ submission.title }}</a>
             </div>

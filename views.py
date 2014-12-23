@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.template import loader,Context,RequestContext
-from django.http import HttpResponse,Http404,HttpResponseForbidden
+from django.http import HttpResponse,Http404,HttpResponseForbidden,HttpResponseNotAllowed
 from django.forms import ModelForm
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from sigmafuzz.models import Submission
 import sigmafuzz.tasks.sf_tasks
@@ -23,6 +24,7 @@ def splash(request):
     template = loader.get_template('sigmafuzz/splash.html')
     return HttpResponse(template.render(Context({'timestamp': datetime.datetime.now().isoformat(' ')})))
 
+@ensure_csrf_cookie
 def index(request,page):
     perPage = 100 #this should be centrally configured at some point
 
@@ -82,18 +84,45 @@ def submissionView(request,subID):
     template = loader.get_template('sigmafuzz/submission.html')
     return HttpResponse(template.render(RequestContext(request,{'submission': submission})))
 
-def submissionArchive(request,subID):
+def submissionArchival(request,subID):
     try:
         submission = Submission.objects.all().get(id=subID)
     except Submission.DoesNotExist:
         raise Http404
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
     if request.user.is_superuser:
-        sigmafuzz.tasks.sf_tasks.archiveImg.delay(subID)
-        response = HttpResponse(content="", status=303)
-        response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
-        return response
+        if request.POST.get("set") == "true" or request.POST.get("set") is None:
+            sigmafuzz.tasks.sf_tasks.archiveImg.delay(subID)
+            response = HttpResponse(content="", status=303)
+            response["Location"] = "http://"+request.META['HTTP_HOST']+"/s/"+str(subID)
+            return response
+        elif request.POST.get("set") == "false":
+            pass #Unarchive
+        elif request.POST.get("set") is None: #Already caught above, but ultimately should be caught here
+            pass
     else:
         return HttpResponseForbidden()
+
+def submissionApproval(request,subID):
+    try:
+        submission = Submission.objects.all().get(id=subID)
+    except Submission.DoesNotExist:
+        raise Http404
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    if request.user.is_superuser:
+        if request.POST.get("set") == "true":
+            submission.approved = True
+        elif request.POST.get("set") == "false":
+            submission.approved = False
+        else:
+            submission.approved = not submission.approved
+        submission.save()
 
 def submissionArchiveErr(request,subID):
     try:

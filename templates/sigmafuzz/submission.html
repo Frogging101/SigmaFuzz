@@ -67,7 +67,11 @@
                 </td></tr>
             </table>
             {% if user.is_superuser %}
-                <form action="/s/{{ submission.id }}/archive"><input type="submit" value="Archive"></form>
+                <form action="/s/{{ submission.id }}/archival" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="set" value="true">
+                    <input type="submit" value="Archive">
+                </form>
             {% endif %}
         </div>
     </div>

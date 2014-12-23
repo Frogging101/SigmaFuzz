@@ -11,5 +11,6 @@ urlpatterns = patterns('',
         url(r'^login/$', views.loginView),
         url(r'^tasks/$', views.tasks),
         url(r'^s/(\d*)/?$', views.submissionView),
-        url(r'^s/(\d*)/?archive$', views.submissionArchive),
+        url(r'^s/(\d*)/?archival$', views.submissionArchival),
+        url(r'^s/(\d*)/?approval$', views.submissionApproval),
         url(r'^s/(\d*)/?archiveErr$', views.submissionArchiveErr),)
