@@ -49,7 +49,7 @@ def index(request,page):
     if arcd == 0:
         submissions = submissions.exclude(archiveStatus=1)
     elif arcd == 1:
-        submissions = submissions.filter(approved=True)
+        submissions = submissions.filter(archiveStatus=1)
 
     if hidd == 0 or not request.user.is_superuser:
         submissions = submissions.exclude(hidden=True)
