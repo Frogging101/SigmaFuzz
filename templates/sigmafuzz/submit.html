@@ -1,6 +1,9 @@
 {% extends "sigmafuzz/base.html" %}
 {% block title %}Submit{% endblock %}
 {% block style %}
+.submitTable{
+    margin: 0 auto;
+}
 .submitTable th{
     padding-right: 10px;
 }
@@ -21,7 +24,7 @@
 <div class="textbox" style="max-width: 700px">
     <form action="/submit/" autocomplete="off" method="POST">
         {% csrf_token %}
-        <table class="submitTable" style="margin: 0 auto;">    
+        <table class="submitTable">
             {{ form }}
         </table>
         <br>
