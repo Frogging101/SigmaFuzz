@@ -75,9 +75,9 @@ def FA_indexSubmission(ID):
     newSub = Submission(**subDict)
     newSub.submitter = "SigmaFuzz"
     newSub.save()
-    genThumb.delay(newSub.id)
+    genThumb(newSub.id)
 
-@app.task
+@app.task(ignore_result=True)
 def testTask(arg1, arg2):
     time.sleep(30)
     return arg1+arg2
@@ -87,14 +87,9 @@ def FA_indexArtist(artist):
     for ID in IDs:
         FA_indexSubmission.delay(ID)
 
-@app.task
-def genThumb(subID):
-    if os.path.exists("/var/www/sigmafuzz/static/thumbs/"+str(subID)+".jpg"):
-        return
+@app.task(ignore_result=True)
+def dlThumb(retval,subID):
     submission = Submission.objects.all().get(id=subID)
-    result = sigmafuzz.tasks.thumbs_tasks.genThumb.delay(submission.imgSource,subID)
-    retval = result.get()
-
     req = urllib2.Request(retval,headers={"User-Agent": "SigmaFuzz/dev (+http://www.sigmafuzz.net/bot)"})
     resp = urllib2.urlopen(req)
 
@@ -106,3 +101,11 @@ def genThumb(subID):
 
     submission.thumbnailed = True
     submission.save()
+
+def genThumb(subID):
+    submission = Submission.objects.all().get(id=subID)
+    if os.path.exists("/var/www/sigmafuzz/static/thumbs/"+str(subID)+".jpg"):
+        return
+    chain = sigmafuzz.tasks.thumbs_tasks.genThumb.s(submission.imgSource,subID) | dlThumb.s(subID)
+    chain()
+    #return chain().get()

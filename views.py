@@ -38,7 +38,7 @@ def index(request,page):
     end = (page+1)*perPage
 
     appd = int(request.GET.get("appd",1))
-    arcd = int(request.GET.get("arcd",2))
+    arcd = int(request.GET.get("arcd",1))
     hidd = int(request.GET.get("hidd",0))
 
     if appd == 0:
@@ -207,7 +207,7 @@ def tasks(request):
             if 'test' in request.POST:
                 sigmafuzz.tasks.sf_tasks.testTask(1,2)
             elif 'genthumb' in request.POST:
-                sigmafuzz.tasks.sf_tasks.genThumb.delay(request.POST['id'])
+                sigmafuzz.tasks.sf_tasks.genThumb(request.POST['id'])
 
     template = loader.get_template('sigmafuzz/tasks.html')
     i = inspect()
